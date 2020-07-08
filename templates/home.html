@@ -1,0 +1,48 @@
+<head>
+    <title>Interfaz 2D</title>
+    <style>
+    table{
+        border-spacing: 15px;
+    }
+    td{
+        background-color: green;
+        width: 50px;
+        height: 30px;
+    }
+    td:hover{
+        border-radius: 50%;
+        background-color: greenyellow
+    }
+</style>
+</head>
+<body>
+        <table id="mitabla">
+                <tbody>
+                </tbody>
+            </table>
+            
+            
+            
+            <script>
+                    var x = {{data|tojson}};
+                    console.log(x);
+                    var tabla = document.getElementById("mitabla").getElementsByTagName('tbody')[0];
+                    var row = tabla.insertRow();
+                    var cell;
+                    var contador = 0;
+                    x.forEach(element => {
+                        if(contador <= 30){
+                            if(contador == 30){
+                                row = tabla.insertRow();
+                                contador=0;
+                            }
+                            cell = row.insertCell();
+                            cell.innerHTML = element["lugar"];
+                            if(element["disponibilidad"] == "reservado"){
+                                cell.style.backgroundColor = 'red';
+                            }
+                            contador++;
+                        }
+                    });
+            </script>
+</body>

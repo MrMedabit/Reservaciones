@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset=utf-8>
+		<title>Interfaz 3D</title>
+		<style>
+			body { margin: 0; }
+			canvas { width: 100%; height: 100% }
+		</style>
+	</head>
+	<body>
+        <canvas id="renderCanvas"></canvas>
+		<script src="/static/babylon.js"></script>
+		<script>
+            window.addEventListener('DOMContentLoaded', function(){
+                var canvas = document.getElementById("renderCanvas");
+                var engine = new BABYLON.Engine(canvas, true);
+                var createScene = function() {
+                // Create a basic BJS Scene object.
+                var scene = new BABYLON.Scene(engine);
+
+                // Create a FreeCamera, and set its position to (x:0, y:5, z:-10).
+                var camera = new BABYLON.UniversalCamera('camera', new BABYLON.Vector3(20, 20, 30), scene);
+                // Attach the camera to the canvas.
+                camera.attachControl(canvas, false);
+
+                // Create a basic light, aiming 0,1,0 - meaning, to the sky.
+                var light = new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(0,1,0), scene);
+
+                // Create a built-in "sphere" shape. 
+
+                var xd = {{data|tojson}};
+                var contador = 0;
+                var contadorz = -2;
+                var contadorx = -15;
+                var mat = new BABYLON.StandardMaterial("material", scene);
+                mat.emissiveColor = new BABYLON.Color3(0, 1, 0);
+                var matrojo = new BABYLON.StandardMaterial("materialrojo", scene);
+                matrojo.emissiveColor = new BABYLON.Color3(1, 0, 0);
+                var matnegro = new BABYLON.StandardMaterial("materialnegro", scene);
+                matnegro.emissiveColor = new BABYLON.Color3(0,0, 0);
+                xd.forEach(element => {
+                    if(contador <= 30){
+                        if(contador == 30){
+                            contadorz += 2;
+                            contador= 0;
+                            contadorx= -15;
+                        }
+                        var a = BABYLON.MeshBuilder.CreateBox('asiento', {segments:16, diameter:1}, scene);
+                        a.position.x = contadorx;
+                        a.position.z = contadorz;
+                        a.material = mat;
+                        if(element["disponibilidad"] == "reservado"){
+                            a.material = matrojo;
+                        }
+                        contador++;
+                        contadorx += 2;
+                    }
+                });
+                var pared = BABYLON.MeshBuilder.CreateBox("escenario", {height: 30, width: 60}, scene);
+                pared.position.z = -7;
+                pared.position.x = 14;
+                pared.position.y = 5;
+                pared.material = matnegro;
+
+                // Return the created scene.
+                return scene;
+            }
+            var scene = createScene();
+            engine.runRenderLoop(function(){
+                scene.render();
+            });
+
+            window.addEventListener('resize', function(){
+                engine.resize();
+            });
+            });
+		</script>
+	</body>
+</html>
